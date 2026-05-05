@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Workout Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#09090f;--s1:#101018;--s2:#16161f;--s3:#1e1e2a;
+  --b1:#2a2a3a;--b2:#3a3a50;
+  --push:#e8521a;--pull:#1a8fe8;--legs:#1ac46e;
+  --pre:#9b4fe8;--post:#0db89e;
+  --gold:#f5c842;--text:#f0f0f8;--muted:#686880;--light:#a8a8c0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(9,9,15,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--b1);padding:10px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold);margin-right:12px;}
+.nbtn{padding:5px 14px;border-radius:20px;border:1px solid var(--b1);background:transparent;color:var(--light);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block;}
+.nbtn:hover,.nbtn.act{border-color:var(--gold);color:var(--gold);}
+
+/* HERO */
+.hero{text-align:center;padding:56px 20px 40px;background:radial-gradient(ellipse at 50% -20%,#1a1030 0%,var(--bg) 65%);}
+.hero-eye{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--muted);margin-bottom:14px;text-transform:uppercase;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,14vw,96px);letter-spacing:4px;line-height:.9;color:#fff;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero-sub{margin-top:14px;color:var(--muted);font-size:13px;}
+
+/* CHIPS */
+.chips{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:0 16px 48px;}
+.chip{background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:12px 20px;text-align:center;}
+.chip .v{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);line-height:1;}
+.chip .l{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:3px;}
+
+/* LOAD IMAGES BAR */
+.img-bar{background:var(--s2);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;}
+.load-btn{padding:8px 22px;border-radius:8px;border:1px solid var(--gold);background:rgba(245,200,66,.08);color:var(--gold);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;transition:.15s;text-transform:uppercase;}
+.load-btn:hover{background:rgba(245,200,66,.18);}
+.load-btn:disabled{opacity:.4;cursor:not-allowed;}
+.prog-txt{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+.prog-bar-wrap{width:200px;height:4px;background:var(--b1);border-radius:2px;display:none;}
+.prog-bar{height:100%;background:var(--gold);border-radius:2px;width:0%;transition:.3s;}
+
+/* SECTION WRAPPER */
+.wrap{max-width:1160px;margin:0 auto;padding:0 16px 60px;}
+
+/* PRE/POST CARDS */
+.pp-sec{margin-bottom:56px;}
+.pp-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;}
+.pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.pp-card{border-radius:14px;overflow:hidden;}
+.pre-card{background:linear-gradient(135deg,#1a0e2e,#14141c);border:1px solid rgba(155,79,232,.3);}
+.post-card{background:linear-gradient(135deg,#0a1e1a,#14141c);border:1px solid rgba(13,184,158,.3);}
+.pp-head{padding:16px 20px 12px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;}
+.pp-head-icon{font-size:22px;}
+.pp-head-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;}
+.pre-title{color:var(--pre);}
+.post-title{color:var(--post);}
+.pp-head-sub{font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);margin-top:2px;letter-spacing:1px;}
+.pp-body{padding:4px 20px 14px;}
+.pp-row{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.pp-row:last-child{border-bottom:none;}
+.pp-num{font-family:'Bebas Neue',sans-serif;font-size:22px;width:26px;flex-shrink:0;line-height:1.1;}
+.pre-num{color:var(--pre);}
+.post-num{color:var(--post);}
+.pp-info .pname{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;}
+.pp-info .pdetail{font-size:11.5px;color:var(--light);margin-top:3px;line-height:1.6;opacity:.85;}
+.pp-time{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:5px;flex-shrink:0;white-space:nowrap;}
+.pre-time{background:rgba(155,79,232,.15);color:var(--pre);}
+.post-time{background:rgba(13,184,158,.15);color:var(--post);}
+
+/* DAY SECTION */
+.day-sec{margin-bottom:56px;}
+.day-hdr{display:flex;align-items:center;gap:14px;padding:20px 0 24px;border-bottom:2px solid var(--b1);margin-bottom:30px;flex-wrap:wrap;}
+.day-pill{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;padding:5px 14px;border-radius:6px;}
+.push-pill{background:rgba(232,82,26,.18);color:var(--push);border:1px solid rgba(232,82,26,.4);}
+.pull-pill{background:rgba(26,143,232,.18);color:var(--pull);border:1px solid rgba(26,143,232,.4);}
+.legs-pill{background:rgba(26,196,110,.18);color:var(--legs);border:1px solid rgba(26,196,110,.4);}
+.day-hdr h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,46px);letter-spacing:2px;line-height:1;margin:0;}
+.push-t{color:var(--push);}
+.pull-t{color:var(--pull);}
+.legs-t{color:var(--legs);}
+.day-meta{margin-left:auto;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-align:right;line-height:1.9;}
+.sec-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin:0 0 16px 2px;}
+
+/* EX GRID */
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:28px;}
+
+/* EX CARD */
+.ex-card{background:var(--s2);border:1px solid var(--b1);border-radius:14px;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.ex-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.6);}
+
+/* IMAGE AREA */
+.img-area{width:100%;height:190px;background:var(--s1);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.img-area img{width:100%;height:100%;object-fit:cover;object-position:center;}
+.img-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:12px;}
+.img-placeholder .ex-icon{font-size:38px;opacity:.35;}
+.img-placeholder a{font-size:10px;color:var(--gold);text-decoration:none;font-family:'Space Mono',monospace;opacity:.7;}
+.img-placeholder a:hover{opacity:1;}
+.img-loading-spin{width:24px;height:24px;border:2px solid var(--b2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.b-num{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.7);color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:17px;padding:2px 8px;border-radius:5px;z-index:2;}
+.b-cmp{position:absolute;top:8px;right:8px;background:var(--gold);color:#000;font-family:'Space Mono',monospace;font-size:7px;letter-spacing:2px;padding:3px 6px;border-radius:3px;font-weight:700;z-index:2;}
+.b-eq{position:absolute;bottom:8px;right:8px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;padding:3px 8px;border-radius:3px;font-weight:700;text-transform:uppercase;z-index:2;}
+.eq-m{background:rgba(26,143,232,.85);color:#fff;}
+.eq-d{background:rgba(232,82,26,.85);color:#fff;}
+.eq-b{background:rgba(26,196,110,.85);color:#fff;}
+.eq-w{background:rgba(140,90,220,.85);color:#fff;}
+
+/* CARD BODY */
+.card-body{padding:14px 14px 12px;}
+.c-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;color:#fff;line-height:1.1;margin-bottom:3px;}
+.c-station{font-size:11px;color:var(--muted);margin-bottom:11px;line-height:1.4;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:11px;}
+.st{background:var(--s1);border:1px solid var(--b1);border-radius:7px;padding:7px 4px;text-align:center;}
+.st .sv{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);line-height:1;}
+.st .sl{font-size:8px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:1px;}
+.howto{border-top:1px solid var(--b1);padding-top:10px;}
+.ht-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:7px;}
+.ht-list{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.ht-list li{font-size:11.5px;color:var(--light);line-height:1.5;display:flex;gap:7px;}
+.ht-list li span{color:var(--gold);font-family:'Space Mono',monospace;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* REST DIV */
+.rdiv{display:flex;align-items:center;gap:10px;margin:2px 0 24px;}
+.rdiv::before,.rdiv::after{content:'';flex:1;height:1px;background:var(--b1);}
+.rchip{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);background:var(--s3);border:1px solid var(--b1);border-radius:20px;padding:4px 12px;white-space:nowrap;text-transform:uppercase;}
+
+/* RULES */
+.rules-box{background:var(--s2);border:1px solid var(--b1);border-radius:14px;padding:22px 24px;margin-bottom:40px;}
+.rules-box h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:7px 22px;}
+.rule{font-size:12.5px;color:var(--light);display:flex;gap:8px;line-height:1.6;}
+.rule::before{content:'→';color:var(--gold);flex-shrink:0;}
+.credit{text-align:center;padding:10px 0 30px;font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;}
+.credit a{color:var(--muted);text-decoration:underline;}
+
+@media(max-width:580px){.pp-grid{grid-template-columns:1fr;}.day-meta{margin-left:0;width:100%;text-align:left;}.ex-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">WORKOUT GUIDE</span>
+  <a class="nbtn" href="#pre">Pre-workout</a>
+  <a class="nbtn" href="#day1">Day 1</a>
+  <a class="nbtn" href="#day2">Day 2</a>
+  <a class="nbtn" href="#day3">Day 3</a>
+  <a class="nbtn" href="#post">Post-workout</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-eye">Body-Solid G10B · Dumbbells · Barbell · Age 37 · 71 kg</div>
+  <h1>COMPLETE<br><em>WORKOUT</em> GUIDE</h1>
+  <div class="hero-sub">Pre &amp; Post Workout · 27 Exercises incl. Forearms · Sets · Reps · Rest · Images</div>
+</div>
+
+<div class="chips">
+  <div class="chip"><div class="v">27</div><div class="l">Exercises</div></div>
+  <div class="chip"><div class="v">3</div><div class="l">Days/Week</div></div>
+  <div class="chip"><div class="v">55–65</div><div class="l">Min/Session</div></div>
+  <div class="chip"><div class="v">48h</div><div class="l">Rest Between</div></div>
+  <div class="chip"><div class="v">10</div><div class="l">Pre+Post Steps</div></div>
+</div>
+
+<div class="img-bar">
+  <button class="load-btn" id="load-btn" onclick="loadImages()">🖼 Load Exercise Images (Simply Fitness)</button>
+  <div class="prog-bar-wrap" id="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
+  <span class="prog-txt" id="prog-txt">Images load from simplyfitness.com via AI search</span>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════ PRE WORKOUT ═══════════ -->
+<div id="pre" class="pp-sec" style="margin-top:40px;">
+  <div class="pp-lbl">── Before you train ──────────────────────────────────</div>
+  <div class="pp-grid">
+
+    <div class="pp-card pre-card">
+      <div class="pp-head">
+        <span class="pp-head-icon">⚡</span>
+        <div><div class="pp-head-title pre-title">PRE-WORKOUT ROUTINE</div><div class="pp-head-sub">Start 15–20 min before lifting</div></div>
+      </div>
+      <div class="pp-body">
+        <div class="pp-row"><div class="pp-num pre-num">1</div><div class="pp-info"><div class="pname">Light cardio warm-up</div><div class="pdetail">Brisk walk, spot jog or cycling. Gets blood flowing, raises core temperature, protects joints. Never skip at 37 — cold muscles tear.</div></div><div class="pp-time pre-time">5 min</div></div>
+        <div class="pp-row"><div class="pp-num pre-num">2</div><div class="pp-info"><div class="pname">Arm circles + shoulder rolls</div><div class="pdetail">10 forward + 10 backward arm circles. 10 shoulder rolls each direction. Opens rotator cuff before any pressing movement.</div></div><div class="pp-time pre-time">1 min</div></div>
+        <div class="pp-row"><div class="pp-num pre-num">3</div><div class="pp-info"><div class="pname">Hip circles + leg swings</div><div class="pdetail">10 circles each side. 10 front-back leg swings per leg. Critical on Day 3 before squats and lunges. Activates glutes and hip flexors.</div></div><div class="pp-time pre-time">1 min</div></div>
+        <div class="pp-row"><div class="pp-num pre-num">4</div><div class="pp-info"><div class="pname">Wrist rotations (forearm days)</div><div class="pdetail">20 circles each direction. Warms up wrist joints before barbell wrist curls and reverse curls. Prevents forearm strain.</div></div><div class="pp-time pre-time">30 sec</div></div>
+        <div class="pp-row"><div class="pp-num pre-num">5</div><div class="pp-info"><div class="pname">Warm-up set on first exercise</div><div class="pdetail">1 set at 40–50% working weight for 12–15 reps. Never jump straight to heavy. Mandatory — protects tendons and joints.</div></div><div class="pp-time pre-time">1 set</div></div>
+        <div class="pp-row"><div class="pp-num pre-num">★</div><div class="pp-info"><div class="pname">Pre-workout meal (60 min before)</div><div class="pdetail">Banana + nuts, 2 rotis + dal, or oats with milk. You need carbs for energy. Don't train on an empty stomach.</div></div><div class="pp-time pre-time">60 min pre</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="pp-card pre-card" style="flex:1;">
+        <div class="pp-head">
+          <span class="pp-head-icon">🤸</span>
+          <div><div class="pp-head-title pre-title" style="font-size:16px;">STRETCHES BY DAY</div><div class="pp-head-sub">After cardio, before lifting</div></div>
+        </div>
+        <div class="pp-body">
+          <div class="pp-row"><div class="pp-num pre-num" style="font-size:13px;width:30px;">D1</div><div class="pp-info"><div class="pname">Push day (chest &amp; triceps)</div><div class="pdetail">Doorframe chest stretch · Cross-body shoulder stretch · Tricep overhead stretch · Wrist circles</div></div></div>
+          <div class="pp-row"><div class="pp-num pre-num" style="font-size:13px;width:30px;">D2</div><div class="pp-info"><div class="pname">Pull day (back, biceps &amp; forearms)</div><div class="pdetail">Arm swings · Cat-cow 10 reps · Child's pose 30 sec · Doorframe bicep stretch · Wrist rotations</div></div></div>
+          <div class="pp-row"><div class="pp-num pre-num" style="font-size:13px;width:30px;">D3</div><div class="pp-info"><div class="pname">Legs + shoulders</div><div class="pdetail">Bodyweight squats ×15 · Hip flexor lunge 30 sec · Calf wall stretch · Front &amp; side leg swings</div></div></div>
+        </div>
+      </div>
+      <div class="pp-card pre-card">
+        <div class="pp-head">
+          <span class="pp-head-icon">💧</span>
+          <div><div class="pp-head-title pre-title" style="font-size:16px;">HYDRATION + MINDSET</div></div>
+        </div>
+        <div class="pp-body">
+          <div class="pp-row"><div class="pp-info"><div class="pdetail"><strong style="color:var(--pre);">500 ml water</strong> 30 min before training. Dehydration cuts strength output by up to 15%.</div></div></div>
+          <div class="pp-row"><div class="pp-info"><div class="pdetail">Check last session's log before starting. Your only goal: <strong style="color:var(--pre);">beat last week by 1 rep.</strong></div></div></div>
+          <div class="pp-row"><div class="pp-info"><div class="pdetail">Forearm exercises: use lighter weight than you think. Forearms overtrain quickly — form over load always.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ DAY 1 ═══════════ -->
+<div id="day1" class="day-sec">
+  <div class="day-hdr">
+    <span class="day-pill push-pill">DAY 01</span>
+    <h2 class="push-t">CHEST &amp; TRICEPS</h2>
+    <div class="day-meta">7 exercises · ~50 min<br>Push Day</div>
+  </div>
+
+  <div class="sec-lbl">── Chest ──────────────────────────</div>
+  <div class="ex-grid" id="grid-chest"></div>
+  <div class="rdiv"><span class="rchip">REST 2 MIN AFTER PRESSING · 60 SEC AFTER FLYES</span></div>
+  <div class="sec-lbl">── Triceps ──────────────────────────</div>
+  <div class="ex-grid" id="grid-tri"></div>
+</div>
+
+<!-- ═══════════ DAY 2 ═══════════ -->
+<div id="day2" class="day-sec">
+  <div class="day-hdr">
+    <span class="day-pill pull-pill">DAY 02</span>
+    <h2 class="pull-t">BACK, BICEPS &amp; FOREARMS</h2>
+    <div class="day-meta">9 exercises · ~55 min<br>Pull Day</div>
+  </div>
+
+  <div class="sec-lbl">── Back ──────────────────────────</div>
+  <div class="ex-grid" id="grid-back"></div>
+  <div class="rdiv"><span class="rchip">REST 2 MIN AFTER ROWS · 60 SEC AFTER BICEPS/FOREARMS</span></div>
+  <div class="sec-lbl">── Biceps &amp; Forearms ──────────────────────────</div>
+  <div class="ex-grid" id="grid-bi"></div>
+</div>
+
+<!-- ═══════════ DAY 3 ═══════════ -->
+<div id="day3" class="day-sec">
+  <div class="day-hdr">
+    <span class="day-pill legs-pill">DAY 03</span>
+    <h2 class="legs-t">LEGS · SHOULDERS · ABS</h2>
+    <div class="day-meta">10 exercises · ~60 min<br>Lower + Delts</div>
+  </div>
+
+  <div class="sec-lbl">── Legs ──────────────────────────</div>
+  <div class="ex-grid" id="grid-legs"></div>
+  <div class="rdiv"><span class="rchip">REST 2 MIN AFTER SQUAT · 90 SEC MACHINES · 60 SEC SHOULDERS</span></div>
+  <div class="sec-lbl">── Shoulders ──────────────────────────</div>
+  <div class="ex-grid" id="grid-sh"></div>
+  <div class="rdiv"><span class="rchip">REST 60 SEC BETWEEN ALL AB SETS</span></div>
+  <div class="sec-lbl">── Abs ──────────────────────────</div>
+  <div class="ex-grid" id="grid-abs"></div>
+</div>
+
+<!-- ═══════════ POST WORKOUT ═══════════ -->
+<div id="post" class="pp-sec">
+  <div class="pp-lbl">── After you train ──────────────────────────────────</div>
+  <div class="pp-grid">
+
+    <div class="pp-card post-card">
+      <div class="pp-head">
+        <span class="pp-head-icon">🧘</span>
+        <div><div class="pp-head-title post-title">POST-WORKOUT ROUTINE</div><div class="pp-head-sub">Do within 30 min of finishing</div></div>
+      </div>
+      <div class="pp-body">
+        <div class="pp-row"><div class="pp-num post-num">1</div><div class="pp-info"><div class="pname">Cool-down walk</div><div class="pdetail">3–5 min slow walk. Brings heart rate down gradually. Prevents blood pooling in legs. Don't stop abruptly after heavy sets.</div></div><div class="pp-time post-time">3–5 min</div></div>
+        <div class="pp-row"><div class="pp-num post-num">2</div><div class="pp-info"><div class="pname">Static stretches (day-specific)</div><div class="pdetail">D1: Doorframe chest + shoulder stretch 30 sec each. D2: Child's pose + lat stretch + forearm stretch. D3: Quad + hip flexor stretch 40 sec each leg + calf stretch.</div></div><div class="pp-time post-time">2–3 min</div></div>
+        <div class="pp-row"><div class="pp-num post-num">3</div><div class="pp-info"><div class="pname">Forearm stretch (after Day 2)</div><div class="pdetail">Extend arm forward, fingers up, pull back gently with other hand 30 sec. Then fingers down, pull back 30 sec. Critical to prevent tennis elbow.</div></div><div class="pp-time post-time">1 min</div></div>
+        <div class="pp-row"><div class="pp-num post-num">4</div><div class="pp-info"><div class="pname">Post-workout meal (within 45 min)</div><div class="pdetail">Most important meal. 35–40g protein + fast carbs. Options: 4 eggs + 2 rotis · 200g paneer + rice · curd + chapati + dal · whey + banana.</div></div><div class="pp-time post-time">Within 45 min</div></div>
+        <div class="pp-row"><div class="pp-num post-num">5</div><div class="pp-info"><div class="pname">Log your session</div><div class="pdetail">Write exercise → weight → sets → reps. Set next target. You cannot improve what you don't track. This is the #1 factor in long-term progress.</div></div><div class="pp-time post-time">5 min</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="pp-card post-card" style="flex:1;">
+        <div class="pp-head">
+          <span class="pp-head-icon">😴</span>
+          <div><div class="pp-head-title post-title" style="font-size:16px;">RECOVERY RULES</div></div>
+        </div>
+        <div class="pp-body">
+          <div class="pp-row"><div class="pp-info"><div class="pname">Sleep 7–8 hours</div><div class="pdetail">80% of muscle is built during deep sleep. Growth hormone peaks in first 2 hours. Non-negotiable at 37.</div></div></div>
+          <div class="pp-row"><div class="pp-info"><div class="pname">Protein spread all day</div><div class="pdetail">145–160g across 4–5 meals. Absorption is capped at ~40g per meal — don't eat it all at once.</div></div></div>
+          <div class="pp-row"><div class="pp-info"><div class="pname">3–4 litres water daily</div><div class="pdetail">Muscles are 75% water. Dehydration = slower recovery, more soreness, less strength output next day.</div></div></div>
+          <div class="pp-row"><div class="pp-info"><div class="pname">Active rest days</div><div class="pdetail">Light 20 min walk + full body stretch. Active recovery accelerates muscle repair by increasing blood flow.</div></div></div>
+        </div>
+      </div>
+      <div class="pp-card post-card">
+        <div class="pp-head">
+          <span class="pp-head-icon">📅</span>
+          <div><div class="pp-head-title post-title" style="font-size:16px;">WEEKLY SCHEDULE</div></div>
+        </div>
+        <div class="pp-body">
+          <div class="pp-row"><div class="pp-num post-num" style="font-size:12px;width:34px;">Mon</div><div class="pp-info"><div class="pdetail" style="color:var(--push);">Day 1 — Chest &amp; Triceps (Push)</div></div></div>
+          <div class="pp-row"><div class="pp-num post-num" style="font-size:12px;width:34px;">Tue</div><div class="pp-info"><div class="pdetail">Rest / light walk + stretch</div></div></div>
+          <div class="pp-row"><div class="pp-num post-num" style="font-size:12px;width:34px;">Wed</div><div class="pp-info"><div class="pdetail" style="color:var(--pull);">Day 2 — Back, Biceps &amp; Forearms (Pull)</div></div></div>
+          <div class="pp-row"><div class="pp-num post-num" style="font-size:12px;width:34px;">Thu</div><div class="pp-info"><div class="pdetail">Rest / light walk + stretch</div></div></div>
+          <div class="pp-row"><div class="pp-num post-num" style="font-size:12px;width:34px;">Fri</div><div class="pp-info"><div class="pdetail" style="color:var(--legs);">Day 3 — Legs, Shoulders &amp; Abs</div></div></div>
+          <div class="pp-row"><div class="pp-num post-num" style="font-size:12px;width:34px;">S/S</div><div class="pp-info"><div class="pdetail">Rest &amp; full recovery</div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- GOLDEN RULES -->
+<div class="rules-box">
+  <h3>⚡ GOLDEN RULES — EVERY SESSION</h3>
+  <div class="rules-grid">
+    <div class="rule">Warm up 5–7 min before every session — never skip at 37</div>
+    <div class="rule">Do 1 warm-up set at 50% weight before each compound exercise</div>
+    <div class="rule">Compound (★): 2 min rest · Isolation: 60 sec · Machine: 60–90 sec</div>
+    <div class="rule">Progressive overload: beat last week by 1 rep before adding weight</div>
+    <div class="rule">Protein: 145–160g/day — eggs, paneer, dal, chicken, curd</div>
+    <div class="rule">Drink water between every single set — 3–4 litres daily</div>
+    <div class="rule">Sleep 7–8 hours — muscle is built during sleep, not in the gym</div>
+    <div class="rule">Track every workout: sets, reps, weight — write it always</div>
+    <div class="rule">Post-workout meal within 45 min — 35–40g protein + carbs</div>
+    <div class="rule">Forearms: lighter weight, higher reps, never rush — they overtrain fast</div>
+  </div>
+</div>
+
+<div class="credit">Exercise images: <a href="https://www.simplyfitness.com/pages/workout-exercise-guides" target="_blank">simplyfitness.com</a> — free illustrated exercise guides</div>
+
+</div><!-- /wrap -->
+
+<script>
+const EQ={machine:"eq-m",db:"eq-d",bb:"eq-b",bw:"eq-w"};
+const EQL={machine:"Machine",db:"Dumbbell",bb:"Barbell",bw:"Bodyweight"};
+
+const DATA={
+  chest:[
+    {n:1,name:"Bi-Angular Chest Press",compound:true,equip:"machine",station:"G10B Bi-Angular Arms · flat position · 210lb stack",sets:"4",reps:"8–10",rest:"2 min",slug:"chest-press-machine",icon:"🏋️",steps:["Sit, align handles with mid-chest level","Grip handles, elbows at 90° flared out","Push forward until arms nearly straight","Return slowly in 3 sec — feel chest stretch","Keep back flat against pad at all times"]},
+    {n:2,name:"Bi-Angular Incline Press",equip:"machine",station:"G10B Arms · lower seat for incline angle",sets:"3",reps:"10",rest:"90 sec",slug:"incline-dumbbell-bench-press",icon:"📐",steps:["Lower seat so handles are at belly level","Creates upward pushing angle for upper chest","Press forward and slightly upward in arc","2 sec push · 3 sec return","Feel squeeze in upper chest at top"]},
+    {n:3,name:"Perfect Pec Fly",equip:"machine",station:"G10B Pec Station · swivel arms · full stretch",sets:"3",reps:"12–15",rest:"60 sec",slug:"peck-deck",icon:"🦋",steps:["Sit at Pec Station, grip swivel handles","Open arms wide — get full chest stretch","Bring arms together like a hug","Squeeze chest hard at top for 1 sec","Open back wide slowly — full control"]},
+    {n:4,name:"Dumbbell Chest Fly",equip:"db",station:"Flat bench · moderate weight · wide arc",sets:"3",reps:"12",rest:"60 sec",slug:"dumbbell-fly",icon:"💪",steps:["Lie on bench, dumbbells above chest","Lower in wide arc — slight elbow bend","Stop when you feel a good chest stretch","Bring dumbbells back up in same arc","Think: hugging a big barrel"]}
+  ],
+  tri:[
+    {n:5,name:"High Pulley Tricep Pressdown",equip:"machine",station:"G10B High Pulley · triceps strap attachment",sets:"3",reps:"15",rest:"60 sec",slug:"triceps-pressdown",icon:"⬇️",steps:["Stand facing high pulley, grab strap","Tuck elbows tight to sides — don't move them","Push strap down until arms fully straight","Hold 1 sec at bottom — squeeze triceps","Return slowly in 3 sec"]},
+    {n:6,name:"DB Overhead Tricep Extension",equip:"db",station:"Seated · both hands on one dumbbell overhead",sets:"3",reps:"12",rest:"60 sec",slug:"dumbbell-overhead-triceps-extension",icon:"☝️",steps:["Sit holding one DB with both hands overhead","Upper arms stay vertical and still","Lower DB behind head bending only elbows","Extend back up — squeeze triceps at top","Don't let elbows flare outward"]},
+    {n:7,name:"Push-ups (Finisher)",equip:"bw",station:"Floor · max reps · record number weekly",sets:"2",reps:"MAX",rest:"90 sec",slug:"push-ups",icon:"🤸",steps:["Hands slightly wider than shoulder width","Body a straight line — head to heels","Lower chest to 1 inch from floor","Push explosively back up","Go until form breaks — that's your max"]}
+  ],
+  back:[
+    {n:1,name:"Lat Pulldown — Wide Grip",compound:true,equip:"machine",station:"G10B High Pulley · lat bar · knees under pad",sets:"4",reps:"8–10",rest:"2 min",slug:"wide-grip-pulldown",icon:"⬇️",steps:["Wide grip just outside shoulder width","Lock knees under pad, lean back 15°","Pull bar to upper chest — NOT behind neck","Lead with elbows — elbows to back pockets","Return slowly 3 sec, feel lat stretch at top"]},
+    {n:2,name:"Seated Cable Row",compound:true,equip:"machine",station:"G10B Low Pulley · close grip · sit upright",sets:"3",reps:"10",rest:"2 min",slug:"seated-cable-row",icon:"🔙",steps:["Sit at low pulley, feet on platform","Sit upright — don't lean back excessively","Pull to lower chest squeezing shoulder blades","Hold 1 sec — feel mid-back working","Extend arms fully forward with a stretch"]},
+    {n:3,name:"Barbell Bent-Over Row",compound:true,equip:"bb",station:"Barbell · overhand grip · back flat at 45°",sets:"3",reps:"10",rest:"2 min",slug:"barbell-row",icon:"🏋️",steps:["Hinge forward to 45° — back flat, chest up","Grip bar overhand, shoulder width","Pull bar to lower chest/upper belly","Squeeze shoulder blades hard at top","Lower bar slowly in 3 seconds"]},
+    {n:4,name:"Dumbbell Pullover",equip:"db",station:"Upper back on bench · hips dropped · one DB",sets:"3",reps:"12",rest:"60 sec",slug:"dumbbell-pullover",icon:"🔄",steps:["Lie across bench, upper back supported","Hold one DB with both hands above chest","Lower DB behind head — feel lat stretch","Pull DB back over chest in same arc","Keep slight elbow bend throughout"]}
+  ],
+  bi:[
+    {n:5,name:"Low Pulley Cable Curl",equip:"machine",station:"G10B Low Pulley · straight bar · constant tension",sets:"3",reps:"12",rest:"60 sec",slug:"straight-bar-low-pulley-cable-curl",icon:"💪",steps:["Stand facing low pulley, grab straight bar","Elbows tucked to sides — must stay still","Curl bar up to chin — squeeze bicep at top","Lower slowly in 3 sec — feel the stretch","Cable keeps tension at bottom unlike DBs"]},
+    {n:6,name:"Dumbbell Hammer Curls",equip:"db",station:"Neutral grip · palms inward · alternate arms",sets:"3",reps:"12",rest:"60 sec",slug:"hammer-curl",icon:"🔨",steps:["Stand, DBs at sides palms facing thighs","Keep palms facing inward throughout","Curl one dumbbell to shoulder height","Lower slowly, repeat other side","Hits brachialis — adds arm thickness"]},
+    {n:7,name:"Barbell Shrugs",equip:"bb",station:"Barbell at thighs · overhand grip · builds traps",sets:"3",reps:"15",rest:"60 sec",slug:"barbell-shrug",icon:"🏋️",steps:["Hold barbell at thighs, overhand grip","Arms stay straight — this is NOT a curl","Shrug shoulders straight UP to ears","Hold 1–2 sec at top — squeeze traps hard","Lower slowly in 2–3 sec back to start"]},
+    {n:8,name:"Barbell Wrist Curl",equip:"bb",station:"Seated · forearms on thighs · palms up · FOREARMS",sets:"3",reps:"15",rest:"60 sec",slug:"seated-barbell-wrist-curl",icon:"🖐️",steps:["Sit on bench, forearms resting on thighs","Hold barbell underhand, wrists over knees","Open fingers slightly to lower weight","Curl wrists upward as far as possible","Squeeze forearms at top — slow and controlled"]},
+    {n:9,name:"Reverse Barbell Curl",equip:"bb",station:"Overhand grip · hits brachioradialis · FOREARMS",sets:"3",reps:"12",rest:"60 sec",slug:"reverse-barbell-curl",icon:"🔃",steps:["Stand holding barbell with overhand grip","Elbows stay tucked to sides throughout","Curl bar up to chin level","Lower slowly in 3 sec — full range","Hits brachioradialis — outer forearm muscle"]}
+  ],
+  legs:[
+    {n:1,name:"Barbell Squat",compound:true,equip:"bb",station:"Bar on upper traps · feet shoulder-width · king of all",sets:"4",reps:"8–10",rest:"2 min",slug:"squat",icon:"🏋️",steps:["Bar on upper traps, feet shoulder-width apart","Big breath in, brace core hard","Squat until thighs parallel to floor","Drive through heels to stand up","Chest up, knees track over toes"]},
+    {n:2,name:"Leg Extension",equip:"machine",station:"G10B Leg Station · pad on lower shin · quads",sets:"3",reps:"15",rest:"90 sec",slug:"leg-extension",icon:"🦵",steps:["Sit, adjust cam — pad on lower shin","Grip seat handles, back flat on pad","Extend legs until fully straight","Squeeze quads hard — hold 1 sec","Lower slowly in 3 sec — don't let it drop"]},
+    {n:3,name:"Leg Curl",equip:"machine",station:"G10B Leg Station · flip cam · hits hamstrings",sets:"3",reps:"15",rest:"90 sec",slug:"lying-leg-curl",icon:"🦵",steps:["Adjust G10B cam to curl position","Pad sits just above heels","Curl legs up as far as possible","Squeeze hamstrings — hold 1 sec","Lower slowly — full range of motion"]},
+    {n:4,name:"DB Walking Lunges",equip:"db",station:"Dumbbells in each hand · 10 steps per leg",sets:"3",reps:"10/leg",rest:"90 sec",slug:"Dumbbell-Step-Up",icon:"🚶",steps:["Hold dumbbells at sides, stand tall","Step forward with one foot — big stride","Lower back knee to 1 inch from floor","Front knee stays over ankle — not past toes","Push off and step forward with back foot"]},
+    {n:5,name:"Standing Calf Raises",equip:"db",station:"Ball of feet on step edge · DB in one hand",sets:"4",reps:"20",rest:"60 sec",slug:"standing-calf-raise",icon:"🦶",steps:["Stand with balls of feet on step edge","Hold DB in one hand, other for balance","Lower heels below step — full stretch","Rise on tiptoes as high as possible","20 slow reps — calves need high reps"]}
+  ],
+  sh:[
+    {n:6,name:"Bi-Angular Shoulder Press",compound:true,equip:"machine",station:"G10B Arms at shoulder height · press overhead",sets:"3",reps:"10",rest:"90 sec",slug:"smith-machine-shoulder-press",icon:"🏋️",steps:["Position G10B arms at shoulder height","Grip handles, elbows flared out at 90°","Press up until arms nearly straight","Lower slowly in 3 sec back to 90°","Guided path protects rotator cuff"]},
+    {n:7,name:"DB Lateral Raises",equip:"db",station:"Standing · slight forward lean · light weight",sets:"3",reps:"15",rest:"60 sec",slug:"dumbbell-lateral-raise",icon:"↔️",steps:["Stand with light DBs, lean forward 10°","Raise arms out to sides to shoulder height","Lead with elbows — pinky slightly higher","Lower slowly in 3 sec — resist on way down","Builds the side delt cap — shoulder width"]},
+    {n:8,name:"Low Pulley Upright Row",equip:"machine",station:"G10B Low Pulley · narrow grip · pull to chin",sets:"3",reps:"12",rest:"60 sec",slug:"barbell-upright-row",icon:"⬆️",steps:["Stand facing low pulley, narrow grip","Pull bar straight up close to body","Elbows lead upward and flare out","Pull until bar reaches chin level","Lower slowly — keep bar close to body"]}
+  ],
+  abs:[
+    {n:9,name:"G10B Cable Ab Crunch",equip:"machine",station:"G10B Mid Pulley · ab strap · kneeling",sets:"3",reps:"20",rest:"60 sec",slug:"rope-ab-pulldown",icon:"🔥",steps:["Kneel at mid pulley, hold strap behind head","Crunch torso forward and down","Round your spine — don't just hip hinge","Squeeze abs hard at the bottom","Return to upright slowly — feel stretch"]},
+    {n:10,name:"Lying Floor Leg Raises",equip:"bw",station:"Floor mat · hands under hips · lower abs",sets:"3",reps:"15",rest:"60 sec",slug:"hanging-leg-raise",icon:"🦵",steps:["Lie flat, hands tucked under hips","Legs straight, raise to 90° (vertical)","Lower slowly — stop before heels touch","Lower back stays pressed to floor","No momentum — slow and controlled"]}
+  ]
+};
+
+function handleImgError(img, slug, icon, n, equip, compound){
+  const parent = img.closest('.img-area');
+  parent.innerHTML = `
+    <div class="img-placeholder">
+      <div class="ex-icon">${icon}</div>
+      <a href="https://www.simplyfitness.com/pages/${slug}" target="_blank">
+        View on simplyfitness.com →
+      </a>
+    </div>
+    <div class="b-num">#${n}</div>
+    ${compound ? '<div class="b-cmp">★ COMPOUND</div>' : ''}
+    <div class="b-eq ${EQ[equip]}">${EQL[equip]}</div>
+  `;
+}
+
+function makeCard(ex){
+  const id="img-"+ex.slug+"-"+ex.n;
+  const div=document.createElement("div");
+  div.className="ex-card";
+  div.innerHTML=`
+    <div class="img-area" id="${id}">
+      <picture>
+        <img 
+          src="./images/${ex.slug}.jpg"
+          alt="${ex.name}"
+          onerror="handleImgError(this, '${ex.slug}', '${ex.icon}', ${ex.n}, '${ex.equip}', ${ex.compound})"
+        >
+      </picture>
+      <div class="b-num">#${ex.n}</div>
+        ${ex.compound?'<div class="b-cmp">★ COMPOUND</div>':''}
+      <div class="b-eq ${EQ[ex.equip]}">${EQL[ex.equip]}</div>
+    </div>
+    <div class="card-body">
+      <div class="c-name">${ex.name}</div>
+      <div class="c-station">${ex.station}</div>
+      <div class="stats">
+        <div class="st"><div class="sv">${ex.sets}</div><div class="sl">Sets</div></div>
+        <div class="st"><div class="sv">${ex.reps}</div><div class="sl">Reps</div></div>
+        <div class="st"><div class="sv">${ex.rest}</div><div class="sl">Rest</div></div>
+      </div>
+      <div class="howto">
+        <div class="ht-lbl">How to do it</div>
+        <ul class="ht-list">${ex.steps.map((s,i)=>`<li><span>${i+1}</span>${s}</li>`).join("")}</ul>
+      </div>
+    </div>`;
+  return div;
+}
+
+function renderAll(){
+  Object.entries(DATA).forEach(([key,arr])=>{
+    const el=document.getElementById("grid-"+key);
+    if(el) arr.forEach(ex=>el.appendChild(makeCard(ex)));
+  });
+}
+
+async function fetchGifUrl(slug){
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:150,
+        tools:[{type:"web_search_20250305",name:"web_search"}],
+        system:"You extract image URLs. Search for the Simply Fitness exercise page and return ONLY the direct animated GIF URL from cdn.shopify.com. Return just the raw URL on a single line, nothing else.",
+        messages:[{role:"user",content:`Find the GIF image URL on https://www.simplyfitness.com/pages/${slug} — return only the cdn.shopify.com image URL`}]
+      })
+    });
+    const d=await r.json();
+    const txt=d.content?.map(c=>c.text||"").filter(Boolean).join("");
+    const m=txt.match(/https:\/\/cdn\.shopify\.com\/[^\s"'<>]+\.gif[^\s"'<>]*/i)
+           ||txt.match(/https:\/\/cdn\.shopify\.com\/[^\s"'<>]+\.(png|webp|jpg)[^\s"'<>]*/i);
+    return m?m[0]:"";
+  }catch(e){return "";}
+}
+
+function setImgLoading(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const spin=document.createElement("div");
+  spin.className="img-loading-spin";
+  el.querySelector(".img-placeholder").innerHTML="";
+  el.querySelector(".img-placeholder").appendChild(spin);
+}
+
+function setImgResult(id,slug,n,url,equip,compound){
+  const el=document.getElementById(id);
+  if(!el)return;
+  if(url){
+    el.innerHTML=`<img src="${url}" alt="exercise" onerror="this.parentNode.innerHTML='<div class=img-placeholder><div class=ex-icon>🏋️</div><a href=https://www.simplyfitness.com/pages/${slug} target=_blank>View on simplyfitness.com →</a></div>'">
+      <div class="b-num">#${n}</div>
+      ${compound?'<div class="b-cmp">★ COMPOUND</div>':''}
+      <div class="b-eq ${EQ[equip]}">${EQL[equip]}</div>`;
+  } else {
+    el.querySelector(".img-placeholder").innerHTML=`<div class="ex-icon">🏋️</div><a href="https://www.simplyfitness.com/pages/${slug}" target="_blank">View on simplyfitness.com →</a>`;
+  }
+}
+
+let isLoading=false;
+async function loadImages(){
+  if(isLoading)return;
+  isLoading=true;
+  const btn=document.getElementById("load-btn");
+  const progTxt=document.getElementById("prog-txt");
+  const progWrap=document.getElementById("prog-wrap");
+  const progBar=document.getElementById("prog-bar");
+  btn.disabled=true;
+  btn.textContent="Loading images...";
+  progWrap.style.display="block";
+
+  const all=Object.values(DATA).flat();
+  let done=0;
+  for(const ex of all){
+    const id="img-"+ex.slug+"-"+ex.n;
+    setImgLoading(id);
+    progTxt.textContent=`Fetching ${ex.name} (${done+1}/${all.length})...`;
+    const url=await fetchGifUrl(ex.slug);
+    setImgResult(id,ex.slug,ex.n,url,ex.equip,ex.compound);
+    done++;
+    progBar.style.width=(done/all.length*100)+"%";
+  }
+  progTxt.textContent=`✓ All ${done} images loaded`;
+  btn.textContent="✓ Images Loaded — Click to Reload";
+  btn.disabled=false;
+  isLoading=false;
+}
+
+renderAll();
+</script>
+</body>
+</html>
